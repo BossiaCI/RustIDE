@@ -1,0 +1,19 @@
+[package]
+name = "my_ai_ide"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+
+
+
+[workspace]
+members = [
+	"crates/entities",
+	"crates/use_cases",
+	"crates/interface_adapters",
+	"crates/framework_drivers",
+	"crates/tests",
+]
+

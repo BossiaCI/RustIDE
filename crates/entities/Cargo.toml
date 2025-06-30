@@ -1,0 +1,17 @@
+[package]
+name = "entities"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# For efficient text buffer management
+ropey = "1.6.1"
+
+# For thread-safe mutable access (more ergonomic than std::sync::Mutex)
+parking_lot = "0.12.1" # Use 0.12.1 for broader compatibility
+
+# For asynchronous operations and channels (needed for observers)
+tokio = { version = "1.38.0", features = ["sync", "macros", "rt-multi-thread"] }
+
+# For defining async methods in traits
+async-traits = "0.1.80"
