@@ -167,4 +167,50 @@ impl TextBuffer {
 
 }
 
+// Document Entity
+// Represent a single file or document open in the IDE.
+// Adheres to SRP by managing document-level properties, not the raw text content (which is textBuffer's job).
+pub struct Document {
+    pub file_path: Option<String>, // Path to file, None for unsaved new documents
+    pub text_buffer: Arc<TextBuffer>, // Shared reference to the associated text buffer
+    is_dirty: Mutex<bool>, // Indicated if the document has unsaved changes
+    pub language_id: String, // e.g., "rust", "cpp", "plaintext"
+}
+
+impl Document {
+    // Creates a new Document, optionally from an existing file path and initial content.
+    pub fn new(file_path: Option<String>, initial_content: &str, language_id: String) -> Self {
+        Self {
+            file_path,
+            text_buffer: Arc::new(TextBuffer::new(initial_content)),
+            is_dirty: Mutex::new(false), // New documents are initially clean until modified
+            language_id,
+        }
+    }
+
+    // Returns true if the document has unsaved changes.
+    pub fn is_dirty(&self) -> bool {
+        *self.is_dirty.lock()
+    }
+
+    // Sets the dirty state of the document.
+    pub fn set_dirty(&self, dirty: bool) {
+        *self.is_dirty.lock() = dirty;
+    }
+
+    // Returns a reference to the underlying textBuffer.
+    pub fn get_text_buffer(&self) -> Arc<TextBuffer> {
+        Arc::clone(&self.text_buffer)
+    }
+
+    // Helper to get the filename from the path, or "Untitled" for new docs.
+    pub fn file_name(&self) -> String {
+        self.file_path.as_ref()
+            .and_then(|p| std::Path::new(p).file_name())
+            .and_then(|os_str| os_str.to_str())
+            .map_or_else(|| "Untitled".to_string(), |s| s.to_string())
+    }
+}
+
+
 
